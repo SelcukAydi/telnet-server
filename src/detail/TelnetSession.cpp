@@ -1,0 +1,56 @@
+#include "detail/TelnetSession.hpp"
+#include "detail/TelnetServer.hpp"
+#include "detail/NVTCommandParser.hpp"
+#include "Helpers.hpp"
+
+namespace sia::lts::detail
+{
+TelnetSession::TelnetSession(std::int32_t id, std::shared_ptr<TelnetServer> server) : m_server(server), m_id(id)
+{
+}
+
+void TelnetSession::send(const std::string& data)
+{
+    m_server.lock()->send(m_id, data);
+}
+
+std::int32_t TelnetSession::getID() const
+{
+    return m_id;
+}
+
+void TelnetSession::processIncomingMsg(const std::string& data)
+{
+    std::string_view msg(data);
+
+    if (msg.empty())
+    {
+    }
+
+    std::vector<std::uint8_t> bytes;
+    for (const auto& item : msg)
+    {
+        bytes.push_back(item);
+    }
+
+    // Dummy send back response.
+    //
+    std::vector<std::uint8_t> to_be_sent = {0xFF, 0xFB, 0x03, 0xFF, 0xFB, 0x05};
+    send(helper::convertToString(to_be_sent));
+    
+    std::uint8_t val = msg.at(0);
+
+    if (val == 0xFF)
+    {
+        NVTCommandParser parser;
+        auto commands = parser.parseCommands(bytes);
+        if (commands.empty())
+        {
+        }
+
+        // Let the executor handle the sequence of commands.
+        //
+    }
+}
+
+}  // namespace sia::lts::detail
