@@ -14,4 +14,4 @@ file(GLOB SRC_FILES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include/ParserModules)
-target_link_libraries(${PROJECT_NAME} Boost::system ${GTEST_LIBRARIES} gtest_main pthread light-telnet-server)
+target_link_libraries(${PROJECT_NAME} Boost::system ${GTEST_LIBRARIES} gtest_main pthread telnet-server)
