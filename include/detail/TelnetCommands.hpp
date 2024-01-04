@@ -23,6 +23,8 @@ struct Command
         return m_code;
     }
 
+    virtual ~Command() = default;
+
     private:
     const std::string m_name;
     const std::uint8_t m_code;
@@ -107,6 +109,24 @@ struct WindowSize : Command
 
     const std::uint16_t m_width;
     const std::uint16_t m_height;
+};
+
+struct TerminalType : Command
+{
+    TerminalType() : Command("TerminalType", 0x18)
+    {
+    }
+
+    std::string m_terminal_name;
+};
+
+struct LineMode : Command
+{
+    LineMode() : Command("LineMode", 0x22)
+    {
+    }
+
+    std::string m_terminal_name;
 };
 
 }  // namespace sia::lts::detail

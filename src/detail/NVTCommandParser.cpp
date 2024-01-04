@@ -132,7 +132,7 @@ std::vector<std::shared_ptr<Command>> NVTCommandParser::parseCommands(const std:
         if(nvt_command == nullptr)
         {
             std::cerr << "Parser returned nullptr\n";
-            return {};
+            continue;;
         }
         commands.push_back(nvt_command);
     }

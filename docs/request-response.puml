@@ -1,0 +1,22 @@
+@startuml "Request Response Model"
+title "Request Response Model"
+!theme vibrant
+autonumber
+
+participant TelnetServer as server
+participant TelnetClient as client
+
+server->client:DO Echo
+alt#LightGreen Positive Response
+    client->server:Will Echo
+    note over server:Client will do echo
+else Negative Response
+    client->server:Wont Echo
+    server->client:Will Echo
+    client->server:Do Echo
+else No Response
+    client-->server
+    note over server: No response assumed\nthat client won't echo
+end
+
+@enduml

@@ -1,6 +1,7 @@
 #include "detail/AsioBase/TCPServer.hpp"
 
 #include <iostream>
+#include <string>
 
 namespace sia::lts::detail
 {
@@ -29,7 +30,7 @@ void TCPServer::start()
     m_acceptor.async_accept([this](boost::system::error_code error_code, Socket::socket_type&& socket)
                             { this->onAccept(error_code, std::move(socket)); });
 
-    std::cout << "Waiting for a new connection on port 9080...\n";
+    std::cout << "Waiting for a new connection...\n";
 }
 
 void TCPServer::onAccept(const boost::system::error_code& err, boost::asio::ip::tcp::socket&& socket)

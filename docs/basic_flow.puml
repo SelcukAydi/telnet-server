@@ -1,0 +1,25 @@
+@startuml "BasicFlow"
+title "Basic Flow"
+!theme vibrant
+autonumber
+
+participant Client as client
+
+'TCP layer
+participant IOBase as io
+participant Connection as connection
+participant TCPServer as tcp
+
+'Telnet layer
+participant TelnetServer as server
+participant TelnetSession as session
+
+client->io:Tcp connection request
+io->connection:Create a new connection
+connection->tcp:Connection accepted
+tcp->server:Connection accepted
+server->session:Create a new session
+
+
+
+@enduml

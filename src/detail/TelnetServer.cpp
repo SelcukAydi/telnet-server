@@ -1,7 +1,9 @@
 #include "detail/TelnetServer.hpp"
+#include "Executors/NVTCommandExecutor.hpp"
 #include "detail/TelnetSession.hpp"
 
 #include <iostream>
+#include <memory>
 
 namespace sia::lts::detail
 {
@@ -43,6 +45,7 @@ std::shared_ptr<TelnetSession> TelnetServer::createNewSession(std::int32_t sessi
     }
     std::cout << "Creating a new session with id " << session_id << '\n';
     auto session = std::make_shared<TelnetSession>(session_id, shared_from_this());
+    session->m_nvt_executor = std::make_shared<sia::lts::executor::NVTCommandExecutor>(session);
     m_session_map.insert({session_id, session});
     return session;
 }

@@ -35,8 +35,8 @@ void TelnetSession::processIncomingMsg(const std::string& data)
 
     // Dummy send back response.
     //
-    std::vector<std::uint8_t> to_be_sent = {0xFF, 0xFB, 0x03, 0xFF, 0xFB, 0x05};
-    send(helper::convertToString(to_be_sent));
+    // std::vector<std::uint8_t> to_be_sent = {0xFF, 0xFB, 0x03, 0xFF, 0xFB, 0x05};
+    // send(helper::convertToString(to_be_sent));
     
     std::uint8_t val = msg.at(0);
 
@@ -50,6 +50,10 @@ void TelnetSession::processIncomingMsg(const std::string& data)
 
         // Let the executor handle the sequence of commands.
         //
+        for(const auto& command : commands)
+        {
+            m_nvt_executor->execute(command);
+        }
     }
 }
 

@@ -4,7 +4,9 @@
 #include "ParserModules/DoParserModule.hpp"
 #include "ParserModules/EchoParserModule.hpp"
 #include "ParserModules/SubOptionParserModule.hpp"
+#include "ParserModules/TerminalTypeParserModule.hpp"
 #include "ParserModules/WindowSizeParserModule.hpp"
+#include "ParserModules/TerminalTypeParserModule.hpp"
 #include "detail/NVTCommandParser.hpp"
 #include "detail/TelnetServer.hpp"
 
@@ -72,8 +74,21 @@ TEST(Basic, Echo)
     auto commands = parser.parseCommands(bytes);
 }
 
+TEST(Basic, TerminalType)
+{
+    sia::lts::detail::NVTCommandParser::registerCommandParserModule(0x18,
+                                                                    std::make_shared<sia::lts::TerminalTypeParser>());
+    sia::lts::detail::NVTCommandParser::registerCommandParserModule(0xFA,
+                                                                    std::make_shared<sia::lts::SubOptionParser>());
+
+    std::vector<std::uint8_t> bytes = {0xFF, 0xFA, 0x18, 0x00, 0x78, 0x74, 0x65, 0x72, 0x6d, 0x2d,
+                                       0x32, 0x35, 0x36, 0x63, 0x6f, 0x6c, 0x6f, 0x72, 0xFF, 0xF0};
+    sia::lts::detail::NVTCommandParser parser;
+    auto commands = parser.parseCommands(bytes);
+}
+
 TEST(Basic, Testttt)
 {
-    auto  server = std::make_shared<sia::lts::detail::TelnetServer>();
-    server->start();
+    // auto  server = std::make_shared<sia::lts::detail::TelnetServer>();
+    // server->start();
 }

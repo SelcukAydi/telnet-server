@@ -1,7 +1,16 @@
 #pragma once
 
+#include "detail/ExecutorBase.hpp"
 #include <cstdint>
 #include <memory>
+
+namespace sia::lts::detail
+{
+    struct TelnetSessionData
+    {
+        virtual ~TelnetSessionData() = default;
+    };
+}
 
 namespace sia::lts::detail
 {
@@ -18,11 +27,14 @@ class TelnetSession
 
     void processIncomingMsg(const std::string& data);
 
+    // NVT command executor.
+    std::shared_ptr<ExecutorBase> m_nvt_executor;
+
     private:
     std::weak_ptr<TelnetServer> m_server;
     const std::int32_t m_id;
 
-    // NVT command executor.
+    
     // Custom command executor. This must be generic.
 };
 }  // namespace sia::lts::detail
