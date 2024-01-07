@@ -1,11 +1,11 @@
-#include "ParserModules/WillParserModule.hpp"
+#include "ParserModules/WontParserModule.hpp"
 #include "detail/TelnetCommands.hpp"
 #include <cstdint>
 #include <memory>
 
 namespace sia::lts
 {
-std::shared_ptr<detail::Command> WillParser::parse(const std::vector<std::uint8_t>& command)
+std::shared_ptr<detail::Command> WontParser::parse(const std::vector<std::uint8_t>& command)
 {
     auto parser = detail::NVTCommandParser::findParser(command[1]);
     if (parser == nullptr)
@@ -13,10 +13,10 @@ std::shared_ptr<detail::Command> WillParser::parse(const std::vector<std::uint8_
         throw detail::ParserNotRegisteredException(command[1]);
     }
 
-    auto do_command = std::make_shared<detail::Wont>();
+    auto wont_command = std::make_shared<detail::Wont>();
     std::vector<std::uint8_t> sub_command_bytes{command.begin() + 1, command.end()};
     auto sub_command = parser->parse(sub_command_bytes);
-    do_command->m_sub_command = sub_command;
-    return do_command;
+    wont_command->m_sub_command = sub_command;
+    return wont_command;
 }
 }  // namespace sia::lts

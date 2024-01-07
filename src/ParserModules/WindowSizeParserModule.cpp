@@ -8,6 +8,11 @@ namespace sia::lts
 {
 std::shared_ptr<detail::Command> WindowSizeParser::parse(const std::vector<std::uint8_t>& command)
 {
+    if(command.size() == 1)
+    {
+        return std::make_shared<detail::WindowSize>(0, 0);
+    }
+
     if(command.size() != 5)
     {
         std::cerr << "Corrupted command bytes\n";

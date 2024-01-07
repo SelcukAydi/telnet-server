@@ -24,6 +24,7 @@ std::vector<std::vector<std::uint8_t>> NVTCommandParser::extractCommands(const s
     {
         kPendingIAC,
         kIAC,
+        kSubCommandBegin,
         kSubOptionBegin
     };
 
@@ -46,6 +47,8 @@ std::vector<std::vector<std::uint8_t>> NVTCommandParser::extractCommands(const s
                 }
                 else
                 {
+                    // Interrupt command falls here. It needs a special treatment.
+                    //
                     std::cerr << "Throwing parse exception\n";
                 }
             }
@@ -59,19 +62,22 @@ std::vector<std::vector<std::uint8_t>> NVTCommandParser::extractCommands(const s
                     current_state = kSubOptionBegin;
                     command.push_back(byte);
                 }
-                else if(byte != 0xFF)
+                else if (byte != 0xFF)
                 {
+                    std::cout << "Transit from kIAC to kSubCommandBegin\n";
+                    current_state = kSubCommandBegin;
                     command.push_back(byte);
-                    // commands.push_back(command);
-                    // command.clear();
-
-                    if(i == data.size() - 1)
-                    {
-                        std::cout << "Transit from kIAC to kPendingIAC\n";
-                        current_state = kPendingIAC;
-                        commands.push_back(command);
-                    }
                 }
+            }
+            break;
+
+            case State::kSubCommandBegin:
+            {
+                command.push_back(byte);
+                commands.push_back(command);
+                command.clear();
+                std::cout << "Transit from kPendingIAC to kPendingIAC\n";
+                current_state = kPendingIAC;
             }
             break;
 
@@ -125,14 +131,15 @@ std::vector<std::shared_ptr<Command>> NVTCommandParser::parseCommands(const std:
         auto itr = m_parser_map.find(byte);
         if (itr == m_parser_map.end())
         {
-            throw ParserNotRegisteredException(byte);
+            // throw ParserNotRegisteredException(byte);
+            continue;
         }
 
         auto nvt_command = itr->second->parse(command);
-        if(nvt_command == nullptr)
+        if (nvt_command == nullptr)
         {
             std::cerr << "Parser returned nullptr\n";
-            continue;;
+            continue;
         }
         commands.push_back(nvt_command);
     }

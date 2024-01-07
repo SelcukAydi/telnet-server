@@ -1,5 +1,7 @@
 #include "detail/AsioBase/Socket.hpp"
 
+#include <array>
+#include <boost/asio/registered_buffer.hpp>
 #include <type_traits>
 #include <iostream>
 
@@ -36,7 +38,8 @@ void Socket::onRead(const boost::system::error_code& err, size_t bytes_transferr
     if (!err)
     {
         // std::cout << "onRead New message received => " << m_read_buff.data() << '\n';
-        func(m_read_buff.data());
+        std::string str{m_read_buff.begin(), m_read_buff.begin() + bytes_transferred};
+        func(str);
     }
     else
     {

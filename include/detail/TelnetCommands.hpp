@@ -25,6 +25,8 @@ struct Command
 
     virtual ~Command() = default;
 
+    std::shared_ptr<Command> m_sub_command;
+
     private:
     const std::string m_name;
     const std::uint8_t m_code;
@@ -47,8 +49,6 @@ struct Will : Command
     Will() : Command("WILL", 0xFB)
     {
     }
-
-    std::shared_ptr<Command> m_sub_command;
 };
 
 struct Wont : Command
@@ -56,8 +56,6 @@ struct Wont : Command
     Wont() : Command("WONT", 0xFC)
     {
     }
-
-    std::shared_ptr<Command> m_sub_command;
 };
 
 struct Do : Command
@@ -65,8 +63,6 @@ struct Do : Command
     Do() : Command("DO", 0xFD)
     {
     }
-
-    std::shared_ptr<Command> m_sub_command;
 };
 
 struct Dont : Command
@@ -74,8 +70,6 @@ struct Dont : Command
     Dont() : Command("DONT", 0xFE)
     {
     }
-
-    std::shared_ptr<Command> m_sub_command;
 };
 
 struct SuppressGoAhead : Command
@@ -90,8 +84,6 @@ struct SB : Command
     SB() : Command("SB", 0xFA)
     {
     }
-
-    std::shared_ptr<Command> m_sub_command;
 };
 
 struct Echo : Command
@@ -120,13 +112,49 @@ struct TerminalType : Command
     std::string m_terminal_name;
 };
 
+struct TerminalSpeed : Command
+{
+    TerminalSpeed() : Command("TerminalSpeed", 0x20)
+    {
+    }
+
+    std::uint64_t m_transmit_speed;
+    std::uint64_t m_receive_speed;
+};
+
 struct LineMode : Command
 {
     LineMode() : Command("LineMode", 0x22)
     {
     }
+};
 
-    std::string m_terminal_name;
+struct RemoteFlowControl : Command
+{
+    RemoteFlowControl() : Command("RemoteFlowControl", 0x21)
+    {
+    }
+};
+
+struct NewEnvOption : Command
+{
+    NewEnvOption() : Command("NewEnvOption", 0x27)
+    {
+    }
+};
+
+struct Status : Command
+{
+    Status() : Command("Status", 0x05)
+    {
+    }
+};
+
+struct XDisplayLocation : Command
+{
+    XDisplayLocation() : Command("XDisplayLocation", 0x23)
+    {
+    }
 };
 
 }  // namespace sia::lts::detail

@@ -25,6 +25,12 @@ void ExecutorBase::commit()
     }
 
     m_session.lock()->send(ss.str());
+    m_to_be_sent_msgs.clear();
+}
+
+[[nodiscard]] std::shared_ptr<TelnetSession> ExecutorBase::getSession() const
+{
+    return m_session.lock();
 }
 
 }  // namespace sia::lts::detail

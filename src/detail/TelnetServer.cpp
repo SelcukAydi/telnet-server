@@ -1,5 +1,16 @@
 #include "detail/TelnetServer.hpp"
+#include "Executors/EchoCommandHandler.hpp"
+#include "Executors/LineModeCommandHandler.hpp"
 #include "Executors/NVTCommandExecutor.hpp"
+#include "Executors/NewEnvOptionCommandHandler.hpp"
+#include "Executors/RemoteFlowControlCommandHandler.hpp"
+#include "Executors/StatusCommandHandler.hpp"
+#include "Executors/SuppressGoAheadCommandHandler.hpp"
+#include "Executors/TerminalSpeedCommandHandler.hpp"
+#include "Executors/TerminalTypeCommandHandler.hpp"
+#include "Executors/WindowSizeCommandHandler.hpp"
+#include "Executors/XDisplayLocationCommandHandler.hpp"
+#include "detail/TelnetCommands.hpp"
 #include "detail/TelnetSession.hpp"
 
 #include <iostream>
@@ -45,7 +56,20 @@ std::shared_ptr<TelnetSession> TelnetServer::createNewSession(std::int32_t sessi
     }
     std::cout << "Creating a new session with id " << session_id << '\n';
     auto session = std::make_shared<TelnetSession>(session_id, shared_from_this());
-    session->m_nvt_executor = std::make_shared<sia::lts::executor::NVTCommandExecutor>(session);
+    auto executor = std::make_shared<sia::lts::executor::NVTCommandExecutor>(session);
+    session->m_nvt_executor = executor;
+
+    executor->registerHandler<detail::Echo, EchoCommandHandler>(0x01);
+    executor->registerHandler<detail::LineMode, LineModeCommandHandler>(0x22);
+    executor->registerHandler<detail::NewEnvOption, NewEnvOptionCommandHandler>(0x27);
+    executor->registerHandler<detail::RemoteFlowControl, RemoteFlowControlCommandHandler>(0x21);
+    executor->registerHandler<detail::Status, StatusCommandHandler>(0x05);
+    executor->registerHandler<detail::SuppressGoAhead, SuppressGoAheadCommandHandler>(0x03);
+    executor->registerHandler<detail::TerminalSpeed, TerminalSpeedCommandHandler>(0x20);
+    executor->registerHandler<detail::TerminalType, TerminalTypeCommandHandler>(0x18);
+    executor->registerHandler<detail::WindowSize, WindowSizeCommandHandler>(0x1F);
+    executor->registerHandler<detail::XDisplayLocation, XDisplayLocationCommandHandler>(0x23);
+
     m_session_map.insert({session_id, session});
     return session;
 }

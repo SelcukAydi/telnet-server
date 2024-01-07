@@ -9,6 +9,11 @@ namespace sia::lts
 {
 std::shared_ptr<detail::Command> TerminalTypeParser::parse(const std::vector<std::uint8_t>& command)
 {
+    if(command.size() == 1)
+    {
+        return std::make_shared<detail::TerminalType>();
+    }
+
     if(command.size() < 3)
     {
         std::cerr << "This is not a terminal type command\n";
